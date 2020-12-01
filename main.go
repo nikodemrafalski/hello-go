@@ -63,9 +63,9 @@ func getRandomsFromRandomOrg(ctx context.Context, count int) ([]int, error) {
 	return result.Result.Random.Data, nil
 }
 
-func getRandomSets(setsCount int, setSize int) ([][]int, error) {
+func getRandomSets(ctx context.Context, setsCount int, setSize int) ([][]int, error) {
 	wg := sync.WaitGroup{}
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(ctx)
 	errorsChannel := make(chan error, setsCount)
 	defer cancel()
 	sets := make([][]int, setsCount)
@@ -141,7 +141,7 @@ func main() {
 			c.Status(http.StatusBadRequest)
 			return
 		}
-		sets, err := getRandomSets(requests, length)
+		sets, err := getRandomSets(c, requests, length)
 		if err != nil {
 			log.Println(err)
 			c.Status(http.StatusInternalServerError)
